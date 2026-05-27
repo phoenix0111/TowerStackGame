@@ -29,6 +29,7 @@ public class SuspendedBuilding : MonoBehaviour
     private Transform oldBlockTransform;
     private float xPosition;
 
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -147,6 +148,9 @@ public class SuspendedBuilding : MonoBehaviour
                 Debug.Log(xPosition + "perfect");
                 rb.isKinematic = true;
                 rb.isKinematic = true;
+            
+               GameManager.Instance.perfectPlacementVFX.transform.position = new Vector3(transform.position.x,transform.position.y + 2,-1.3f);
+
                 GameManager.Instance.PerfectBlockPlaced();
             }
             else

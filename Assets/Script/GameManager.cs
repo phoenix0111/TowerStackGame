@@ -20,18 +20,31 @@ public class GameManager : MonoBehaviour
     int score = 0;
     public int placedBlockScore = 10;
     public int perfectBlockScore = 20;
-    [SerializeField] GameObject starsVFX;
+    public GameObject perfectPlacementVFX;
+    ParticleSystem perfectPlacementParticles;
+    AudioSource starsSFX;
 
     [Header("Game Over")]
     [SerializeField] GameObject gameOverPanel;
     bool isGameOver = false;
 
+    [Header("Audio")]
+    private AudioSource ad;
+    [SerializeField] AudioClip placementSFX;
+    [SerializeField] AudioClip buildingFail;
+
 
     void Awake()
     {
+        Time.timeScale = 1f;
+
         Instance = this;
 
         craneMove = crane.GetComponent<CraneMove>();
+        perfectPlacementParticles = perfectPlacementVFX.GetComponent<ParticleSystem>();
+        starsSFX = perfectPlacementVFX.GetComponent<AudioSource>();
+
+        ad = GetComponent<AudioSource>();
     }
 
     public void SpawnNextBlock()
@@ -50,7 +63,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        ad.PlayOneShot(buildingFail);
         Debug.Log("Game Over!");
+        Time.timeScale = 0f;
         isGameOver = true;
         gameOverPanel.SetActive(true);
 
@@ -59,6 +74,7 @@ public class GameManager : MonoBehaviour
 
     public void BlockPlaced()
     {
+        ad.PlayOneShot(placementSFX);
         score += placedBlockScore;
         scoreText.text = "Score: " + score;
     }
@@ -66,6 +82,9 @@ public class GameManager : MonoBehaviour
 
     public void PerfectBlockPlaced()
     {
+        ad.PlayOneShot(placementSFX);
+        perfectPlacementParticles.Play();
+        starsSFX.Play();
         score += perfectBlockScore;
         scoreText.text = "Score: " + score;
     }
