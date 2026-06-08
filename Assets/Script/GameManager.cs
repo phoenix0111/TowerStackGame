@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
     public GameObject perfectPlacementVFX;
     ParticleSystem perfectPlacementParticles;
     AudioSource starsSFX;
+    public GameObject perfectImage;
 
     [Header("Game Over")]
     [SerializeField] GameObject gameOverPanel;
@@ -58,7 +61,10 @@ public class GameManager : MonoBehaviour
         craneMove.MoveUp(blockHeight);
 
         Instantiate(buildingPrefab, spawnPos, Quaternion.Euler(0,-90,0));
-       }
+
+        }
+
+
     }
 
     public void GameOver()
@@ -82,6 +88,7 @@ public class GameManager : MonoBehaviour
 
     public void PerfectBlockPlaced()
     {
+        StartCoroutine(PerfectImage());
         ad.PlayOneShot(placementSFX);
         perfectPlacementParticles.Play();
         starsSFX.Play();
@@ -89,4 +96,11 @@ public class GameManager : MonoBehaviour
         scoreText.text = "Score: " + score;
     }
 
+    IEnumerator PerfectImage()
+    {
+        perfectImage.SetActive(true);
+        yield return new WaitForSeconds(2f);
+
+        perfectImage.SetActive(false);
+    }
 }

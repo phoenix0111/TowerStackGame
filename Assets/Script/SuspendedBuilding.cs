@@ -36,7 +36,7 @@ public class SuspendedBuilding : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         crane = FindAnyObjectByType<CraneMove>().gameObject.transform;
-
+       
         rb.isKinematic = true;
     }
 
