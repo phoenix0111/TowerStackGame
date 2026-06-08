@@ -29,9 +29,9 @@ public class GameManager : MonoBehaviour
     bool isGameOver = false;
 
     [Header("Audio")]
-    private AudioSource ad;
-    [SerializeField] AudioClip placementSFX;
-    [SerializeField] AudioClip buildingFail;
+    public AudioSource ad;
+    public AudioClip placementSFX;
+    public AudioClip buildingFail;
 
 
     void Awake()
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        ad.PlayOneShot(buildingFail);
+       
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
         isGameOver = true;
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
 
     public void BlockPlaced()
     {
-        ad.PlayOneShot(placementSFX);
+     
         score += placedBlockScore;
         scoreText.text = "Score: " + score;
     }

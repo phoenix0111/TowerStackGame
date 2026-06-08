@@ -29,7 +29,9 @@ public class SuspendedBuilding : MonoBehaviour
     private Transform oldBlockTransform;
     private float xPosition;
 
+    public float perfectPlacementThreshold = 0.13f;
 
+    public bool isMainMenu ;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -45,7 +47,7 @@ public class SuspendedBuilding : MonoBehaviour
             FollowCrane();
         }
 
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) && !dropped)
+        if ((Input.GetMouseButtonDown(0) && !isMainMenu || Input.GetKeyDown(KeyCode.Space)) && !isMainMenu && !dropped )
         {
             Drop();
         }
@@ -98,12 +100,15 @@ public class SuspendedBuilding : MonoBehaviour
                 checkingPlacement = true;
                 oldBlockTransform = collision.gameObject.transform;
 
+                GameManager.Instance.ad.PlayOneShot(GameManager.Instance.placementSFX);
+
                 StartCoroutine(CheckPlacement());
             }
         }
 
         if (collision.gameObject.CompareTag("Ground"))
         {
+            GameManager.Instance.ad.PlayOneShot(GameManager.Instance.buildingFail);
             checkGroundTouch = true;
             GameManager.Instance.GameOver();
 
@@ -136,21 +141,21 @@ public class SuspendedBuilding : MonoBehaviour
             spawnedNext = true;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-        
+
 
             GameManager.Instance.nextHeight +=
                 GameManager.Instance.blockHeight;
 
             xPosition = Mathf.Abs(transform.position.x - oldBlockTransform.position.x);
 
-            if (xPosition < 0.1f && xPosition > -0.1)
+            if (xPosition < perfectPlacementThreshold && xPosition > -perfectPlacementThreshold)      // here it checks if the block is placed within the perfect placement threshold,
             {
                 Debug.Log(xPosition + "perfect");
                 rb.isKinematic = true;
                 rb.isKinematic = true;
-            
-               GameManager.Instance.perfectPlacementVFX.transform.position = new Vector3(transform.position.x,transform.position.y + 2,-1.3f);
 
+                GameManager.Instance.perfectPlacementVFX.transform.position = new Vector3(transform.position.x, transform.position.y + 2, -1.3f);
+       
                 GameManager.Instance.PerfectBlockPlaced();
             }
             else
