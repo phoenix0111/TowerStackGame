@@ -1,42 +1,37 @@
 using System.Collections;
 using UnityEngine;
 
-
-
 public class SuspendedBuilding : MonoBehaviour
 {
     public Transform crane;
-
     Rigidbody rb;
-
     bool dropped = false;
 
     [Header("Suspension")]
     public float ropeLength = 5f;
-
     public float swayAmount = 2f;
     public float swaySpeed = 2f;
 
     [Header("Follow")]
     public float smoothTime = 0.2f;
-
     Vector3 velocity;
 
+    [Header("Tower Placement")]
     bool spawnedNext = false;
     bool checkGroundTouch = false;
     bool checkingPlacement = false;
-
     private Transform oldBlockTransform;
     private float xPosition;
-
     public float perfectPlacementThreshold = 0.13f;
 
-    public bool isMainMenu ;
+    public bool isMainMenu;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         crane = FindAnyObjectByType<CraneMove>().gameObject.transform;
-       
+
         rb.isKinematic = true;
     }
 
@@ -47,7 +42,7 @@ public class SuspendedBuilding : MonoBehaviour
             FollowCrane();
         }
 
-        if ((Input.GetMouseButtonDown(0) && !isMainMenu || Input.GetKeyDown(KeyCode.Space)) && !isMainMenu && !dropped )
+        if ((Input.GetMouseButtonDown(0) && !isMainMenu || Input.GetKeyDown(KeyCode.Space)) && !isMainMenu && !dropped)
         {
             Drop();
         }
@@ -61,12 +56,7 @@ public class SuspendedBuilding : MonoBehaviour
 
         targetPos += new Vector3(sway, -ropeLength, 0);
 
-        transform.position = Vector3.SmoothDamp(
-            transform.position,
-            targetPos,
-            ref velocity,
-            smoothTime
-        );
+        transform.position = Vector3.SmoothDamp(transform.position,targetPos,ref velocity, smoothTime);
     }
 
     void Drop()
@@ -88,14 +78,10 @@ public class SuspendedBuilding : MonoBehaviour
             if (collision.gameObject.CompareTag("Ground"))
             {
                 checkGroundTouch = true;
-
-
                 return;
             }
 
-            if (
-                collision.gameObject.CompareTag("Floor") && !checkGroundTouch && !checkingPlacement
-            )
+            if ( collision.gameObject.CompareTag("Floor") && !checkGroundTouch && !checkingPlacement )
             {
                 checkingPlacement = true;
                 oldBlockTransform = collision.gameObject.transform;
@@ -114,7 +100,6 @@ public class SuspendedBuilding : MonoBehaviour
 
             return;
         }
-
 
     }
 
@@ -142,9 +127,7 @@ public class SuspendedBuilding : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
 
-
-            GameManager.Instance.nextHeight +=
-                GameManager.Instance.blockHeight;
+            GameManager.Instance.nextHeight += GameManager.Instance.blockHeight;
 
             xPosition = Mathf.Abs(transform.position.x - oldBlockTransform.position.x);
 
@@ -155,7 +138,7 @@ public class SuspendedBuilding : MonoBehaviour
                 rb.isKinematic = true;
 
                 GameManager.Instance.perfectPlacementVFX.transform.position = new Vector3(transform.position.x, transform.position.y + 2, -1.3f);
-       
+
                 GameManager.Instance.PerfectBlockPlaced();
             }
             else

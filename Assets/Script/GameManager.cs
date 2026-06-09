@@ -2,19 +2,16 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-
 public class GameManager : MonoBehaviour
 {
+    [Header("Instance")]
     public static GameManager Instance;
 
+    [Header("Essentials")]
     public GameObject buildingPrefab;
-
     public Transform crane;
-
     public float nextHeight = 0;
-
     public float blockHeight = 1f;
-
     CraneMove craneMove;
 
     [Header("Score")]
@@ -40,47 +37,35 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         Time.timeScale = 1f;
-
         Instance = this;
-
         craneMove = crane.GetComponent<CraneMove>();
         perfectPlacementParticles = perfectPlacementVFX.GetComponent<ParticleSystem>();
         starsSFX = perfectPlacementVFX.GetComponent<AudioSource>();
-
         ad = GetComponent<AudioSource>();
     }
 
     public void SpawnNextBlock()
     {
-        if (!isGameOver) 
+        if (!isGameOver)
         {
-        Vector3 spawnPos = crane.position + Vector3.down * 3f;
-
-        spawnPos.y = nextHeight + 8f;
-
-        craneMove.MoveUp(blockHeight);
-
-        Instantiate(buildingPrefab, spawnPos, Quaternion.Euler(0,-90,0));
-
+            Vector3 spawnPos = crane.position + Vector3.down * 3f;
+            spawnPos.y = nextHeight + 8f;
+            craneMove.MoveUp(blockHeight);
+            Instantiate(buildingPrefab, spawnPos, Quaternion.Euler(0, -90, 0));
         }
-
-
     }
 
     public void GameOver()
     {
-       
         Debug.Log("Game Over!");
         Time.timeScale = 0f;
         isGameOver = true;
         gameOverPanel.SetActive(true);
 
-
     }
 
     public void BlockPlaced()
     {
-     
         score += placedBlockScore;
         scoreText.text = "Score: " + score;
     }
@@ -100,7 +85,6 @@ public class GameManager : MonoBehaviour
     {
         perfectImage.SetActive(true);
         yield return new WaitForSeconds(2f);
-
         perfectImage.SetActive(false);
     }
 }
